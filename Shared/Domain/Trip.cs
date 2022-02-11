@@ -10,7 +10,7 @@ namespace Project3.Shared.Domain
     {
         public int ID { get; set; }
 
-        public string Details { get; set; }
+        public string Details { get; set; }        
 
         public virtual Traveller TEmail { get; set; }
 

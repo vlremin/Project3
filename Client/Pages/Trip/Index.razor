@@ -1,0 +1,67 @@
+﻿@page "/Trips/"
+@using Microsoft.AspNetCore.Authorization
+
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+
+<h3 class="card-title">Trip Itinerary</h3>
+<br />
+@if (Trips == null)
+{
+    <div class="alert alert-info">Loading Information...</div>
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Trip ID</th>
+                <th>Actions</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var trip in Trips)
+            {
+                <tr>
+                    <td>@trip.ID</td>
+                    <td>
+                        <a href="/Trips/view/@trip.ID" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/Trips/edit/@trip.ID" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(trip.ID))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    private List<Trip> Trips;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Trips = await _client.GetFromJsonAsync<List<Trip>>("api/Trips");
+    }
+
+    async Task Delete(int ID)
+    {
+        var trip = Trips.First(q => q.ID == ID);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {trip.ID}?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"api/Trips/{ID}");
+            await OnInitializedAsync();
+        }
+    }
+}

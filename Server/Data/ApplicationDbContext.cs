@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Project3.Server.Configurations;
 using Project3.Server.Models;
 using Project3.Shared.Domain;
 using System;
@@ -23,5 +24,15 @@ namespace Project3.Server.Data
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Traveller> Travellers { get; set; }
         public DbSet<Trip> Trips { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.ApplyConfiguration(new TripSeedConfiguration());
+            builder.ApplyConfiguration(new StaffSeedConfiguration());
+            builder.ApplyConfiguration(new TravellerSeedConfiguration());
+            builder.ApplyConfiguration(new RouteSeedConfiguration());
+        }
     }
+   
 }

@@ -1,0 +1,52 @@
+﻿@inject HttpClient _client
+
+<EditForm Model="@Staff" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Staff Details: </label>
+            <div>
+                <InputText @bind-Value="staff.StaffEmail" class="form-control">
+                    <option value="">-- Select Email --</option>
+                    @if (Staff != null)
+                {
+                    foreach (var staff in Staff)
+                    {
+                    <option value="@staff.ID">@staff.StaffEmail</option>
+            }
+
+        }
+               
+        }
+                </InputText>
+                <ValidationMessage For="@(() => staff.ID)" />
+            </div>
+        </div>
+    </fieldset>
+
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+    <BackToList Target="staffs" />
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Staff staff { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Staff> Staff;
+    
+
+    protected async override Task OnInitializedAsync()
+    {
+        Staff = await _client.GetFromJsonAsync<List<Staff>>($"api/Staffs");
+        //booking.DateOut = DateTime.Now;
+    }
+}

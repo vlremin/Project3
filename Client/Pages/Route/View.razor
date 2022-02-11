@@ -1,0 +1,17 @@
+﻿@page "/Routes/view/{ID:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View Information</h3>
+
+<FormComponent route="route" Disabled="true" />
+
+@code {
+    [Parameter] public int ID { get; set; }
+    Route route = new Route();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        route = await _client.GetFromJsonAsync<Route>($"api/Routes/{ID}");
+    }
+}

@@ -1,0 +1,17 @@
+﻿@page "/Travellers/view/{ID:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>View Information</h3>
+
+<FormComponent traveller="traveller" Disabled="true" />
+
+@code {
+    [Parameter] public int ID { get; set; }
+    Traveller traveller = new Traveller();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        traveller = await _client.GetFromJsonAsync<Traveller>($"api/Travellers/{ID}");
+    }
+}

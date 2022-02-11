@@ -1,0 +1,23 @@
+﻿@page "/Staffs/edit/{ID:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit Staff Information</h3>
+
+<FormComponent ButtonText="Update" OnValidSubmit="CreateAccount" staff="staff" />
+
+@code {
+    [Parameter] public int ID { get; set; }
+    Staff staff = new Staff();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        staff = await _client.GetFromJsonAsync<Staff>($"api/Staffs/{ID}");
+    }
+
+    async Task CreateAccount()
+    {
+        await _client.PutAsJsonAsync($"api/Staffs/{ID}", staff);
+        _navManager.NavigateTo("/Staffs/");
+    }
+}

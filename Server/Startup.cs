@@ -8,7 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Project3.Server.Data;
+//using Project3.Server.IRepository;
 using Project3.Server.Models;
+//using Project3.Server.Repository;
 using System.Linq;
 
 namespace Project3.Server
@@ -43,6 +45,8 @@ namespace Project3.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

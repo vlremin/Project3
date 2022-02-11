@@ -1,0 +1,29 @@
+﻿@page "/Routes/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3 class="card-title">Create New Route</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create Route" route="route" OnValidSubmit="@CreateVehicle" Disabled="false" />
+
+@code {
+
+    Route route = new Route();
+
+    private IList<Route> Routes;
+   
+
+    protected async override Task OnInitializedAsync()
+    {
+        Routes = await _client.GetFromJsonAsync<List<Route>>($"api/Routes");
+       
+    }
+
+    private async Task CreateVehicle()
+    {
+        await _client.PostAsJsonAsync($"api/Routes", route);
+        _navManager.NavigateTo("/Routes/");
+    }
+}

@@ -1,0 +1,23 @@
+﻿@page "/Routes/edit/{ID:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit Staff Information</h3>
+
+<FormComponent ButtonText="Update" OnValidSubmit="CreateRoute" route="route" />
+
+@code {
+    [Parameter] public int ID { get; set; }
+    Route route = new Route();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        route = await _client.GetFromJsonAsync<Route>($"api/Routes/{ID}");
+    }
+
+    async Task CreateRoute()
+    {
+        await _client.PutAsJsonAsync($"api/Routes/{ID}", route);
+        _navManager.NavigateTo("/Routes/");
+    }
+}

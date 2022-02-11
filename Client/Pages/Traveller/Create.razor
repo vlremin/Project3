@@ -1,0 +1,29 @@
+﻿@page "/Travellers/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3 class="card-title">Create New Account</h3>
+<hr />
+<br />
+
+<FormComponent ButtonText="Create Account" staff="staff" OnValidSubmit="@CreateAccount" Disabled="false" />
+
+@code {
+    Traveller traveller = new Traveller();
+
+    private IList<Traveller> travellers;
+    
+
+    protected async override Task OnInitializedAsync()
+    {
+        travellers = await _client.GetFromJsonAsync<List<Traveller>>($"api/Travellers");
+        
+        //booking.DateOut = DateTime.Now;
+    }
+
+    private async Task CreateAccount()
+    {
+        await _client.PostAsJsonAsync("api/Travellers", traveller);
+        _navManager.NavigateTo("/Travellers/");
+    }
+}

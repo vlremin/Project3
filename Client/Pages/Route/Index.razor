@@ -1,0 +1,66 @@
+﻿@page "/Routes/"
+@using Microsoft.AspNetCore.Authorization
+
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+
+
+<h3 class="card-title">Travel Routes</h3>
+<br />
+@if (Routes == null)
+{
+    <div class="alert alert-info">Loading Routes...</div>
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Route ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var route in Routes)
+            {
+                <tr>
+                    <td>@route.ID</td>
+                    <td>
+                        <a href="/Routes/view/@route.ID" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/Routes/edit/@route.ID" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(route.ID))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    private List<Route> Routes;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Routes = await _client.GetFromJsonAsync<List<Route>>("api/Routes");
+    }
+
+    async Task Delete(int ID)
+    {
+        var route = Routes.First(q => q.ID == ID);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {route.ID}?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"api/Routes/{ID}");
+            await OnInitializedAsync();
+        }
+    }
+}
